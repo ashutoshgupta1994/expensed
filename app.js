@@ -5,9 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var Sequelize = require('sequelize');
+var Model = Sequelize.Model;
+
+var bt = require('./models/baseTables');
 
 var indexRouter = require('./routes/indexRouter');
 var userRouter = require('./routes/userRouter');
+var testRouter = require('./routes/testRouter');
 
 var app = express();
 
@@ -20,6 +24,9 @@ var sequelize = new Sequelize('split','local','local',{
 sequelize.authenticate()
 .then(()=>{
   console.log(`Connection succesfully established at host=${sequelize.options.host} and port=${sequelize.options.port}`);
+  bt.user.sync().then(()=>console.log('Users Info Table synced')).catch((err)=>next(err));
+  bt.group.sync().then(()=>console.log('Groups Info Table synced')).catch((err)=>next(err));
+  bt.tran.sync().then(()=>console.log('Transactions Table synced')).catch((err)=>next(err));
 })
 .catch((err) => {
   console.error('Unable to connect to the database:', err);
@@ -41,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/user', userRouter);
+app.use('/test', testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
