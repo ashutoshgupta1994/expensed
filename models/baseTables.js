@@ -33,7 +33,7 @@ user.init({
     type: Sequelize.STRING
   },
   groups:{
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   }
 },{
   sequelize,
@@ -52,7 +52,7 @@ group.init({
     type: Sequelize.STRING,
   },
   members:{
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   },
   admin:{
       type: Sequelize.STRING
@@ -91,4 +91,46 @@ tran.init({
   modelName: 'tran'
 });
 
-module.exports = {user, group, tran};
+//New Model for Users Info Table
+class test extends Model{}
+test.init({
+  testId:{
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  firstname:{
+    type: Sequelize.STRING
+  },
+  lastname:{
+    type: Sequelize.STRING
+  },
+  username:{
+    type: Sequelize.STRING,
+    unique: true
+  },
+  password:{
+    type: Sequelize.STRING
+  },
+  groups:{
+    type: Sequelize.STRING,
+    /*
+    get() {
+        if (this.getDataValue('groups') == null){
+          return this.getDataValue('groups')
+        }
+        else{
+          return this.getDataValue('groups').split(';')
+        }
+    },
+    set(val) {
+       this.setDataValue('groups',(';',val));
+    }
+    */
+  }
+},{
+  sequelize,
+  modelName: 'test'
+});
+
+module.exports = {user, group, tran, test};

@@ -27,6 +27,7 @@ sequelize.authenticate()
   bt.user.sync().then(()=>console.log('Users Info Table synced')).catch((err)=>next(err));
   bt.group.sync().then(()=>console.log('Groups Info Table synced')).catch((err)=>next(err));
   bt.tran.sync().then(()=>console.log('Transactions Table synced')).catch((err)=>next(err));
+  bt.test.sync().then(()=>console.log('Test Table synced')).catch((err)=>next(err));
 })
 .catch((err) => {
   console.error('Unable to connect to the database:', err);
