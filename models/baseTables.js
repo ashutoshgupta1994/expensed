@@ -3,6 +3,7 @@ var Sequelize = require('sequelize');
 var Model = Sequelize.Model;
 //const { QueryTypes } = require('sequelize');
 
+var passportLocalSequelize = require('passport-local-sequelize');
 
 //setting Sequelize Connection
 var sequelize = new Sequelize('split','local','local',{
@@ -27,17 +28,30 @@ user.init({
   },
   username:{
     type: Sequelize.STRING,
-    unique: true
+    unique: true,
+    allowNull: false
   },
-  password:{
-    type: Sequelize.STRING
+  userHash:{
+    type: Sequelize.TEXT,
+    allowNull: false
+  },
+  userSalt:{
+    type: Sequelize.STRING,
+    allowNull: false
   },
   groups:{
     type: Sequelize.STRING,
+    default: null
   }
 },{
   sequelize,
   modelName: 'user'
+});
+
+passportLocalSequelize.attachToUser(user, {
+	usernameField: 'username',
+	hashField: 'userHash',
+	saltField: 'userSalt'
 });
 
 //Model for Groups Info table

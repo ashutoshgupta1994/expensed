@@ -1,3 +1,4 @@
+var passport = require('passport');
 var express = require('express');
 var userRouter = express.Router();
 var Sequelize = require('sequelize');
@@ -30,30 +31,6 @@ userRouter.get('/', (req, res, next) => {
       res.json({'All Transactions': allTran, 'All Users': allUser});
     })
     .catch((err)=>next(err));  
-  })
-  .catch((err)=>next(err));
-});
-
-
-//Serving at '/user/signup'
-
-userRouter.post('/signup', (req, res, next) => {
-  bt.user.sync()
-  .then(()=>{
-    bt.user.create({  // Creating new user with the data provided in req.body
-      username: req.body.username, 
-      password: req.body.password, 
-      firstname: req.body.firstname, 
-      lastname: req.body.lastname
-    })
-    .then((newuser)=>{
-      console.log('New User created with credentials = ', newuser);
-
-      res.statusCode=200;
-      res.setHeader('Content-Type','application/json');
-      res.json(newuser);
-    })
-    .catch((err)=>next(err));
   })
   .catch((err)=>next(err));
 });

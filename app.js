@@ -1,3 +1,4 @@
+var passport = require('passport');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -12,6 +13,7 @@ var bt = require('./models/baseTables');
 var indexRouter = require('./routes/indexRouter');
 var userRouter = require('./routes/userRouter');
 var testRouter = require('./routes/testRouter');
+var authRouter = require('./routes/authRouter');
 
 var app = express();
 
@@ -44,12 +46,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(passport.initialize());
 
 //Routing endpoints
-
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/test', testRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
