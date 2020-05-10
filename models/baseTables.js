@@ -39,6 +39,10 @@ user.init({
     type: Sequelize.STRING,
     allowNull: false
   },
+  admin:{
+    type: Sequelize.BOOLEAN,
+    default: false
+  },
   groups:{
     type: Sequelize.STRING,
     default: null

@@ -50,9 +50,9 @@ app.use(passport.initialize());
 
 //Routing endpoints
 app.use('/', indexRouter);
-app.use('/user', userRouter);
+app.use('/user', userRouter); // Directing to specific user related tasks, posting transaction, viewing transactions, viewing balance, etc.
 app.use('/test', testRouter);
-app.use('/auth', authRouter);
+app.use('/auth', authRouter); // Directing to Authorisation related tasks, i.e. Singup, Login and Logout.
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

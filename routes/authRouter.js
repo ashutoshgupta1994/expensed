@@ -19,13 +19,15 @@ var sequelize = new Sequelize('split','local','local',{
 
 //Serving at '/auth/signup'
 authRouter.post('/signup', (req, res, next) => {
-    bt.user.register( new bt.user({username: req.body.username}), req.body.password, (err, user)=>{
+    // registering new user using credentials given in the body
+    bt.user.register( new bt.user({username: req.body.username}), req.body.password, (err, user)=>{ 
+        //serving callback inside user.register function
         if (err) {
             res.statusCode=500;
             res.setHeader('Content-Type','application/json');
             res.json({err: err});
         }
-        else {
+        else { // setting other user details and then saving
             if(req.body.firstname)
                 user.firstname = req.body.firstname;
             if(req.body.lastname)
@@ -35,7 +37,7 @@ authRouter.post('/signup', (req, res, next) => {
                 console.log('\nUser Saved as ',user);
 
                 passport.authenticate('local')(req,res,()=>{
-                    console.log('\nInside authenticate Callback');
+                    console.log('\nInside passport.authenticate() Callback');
                     
                     res.statusCode=200;
                     res.setHeader('Content-Type','application/json');
@@ -54,8 +56,10 @@ authRouter.post('/login', passport.authenticate('local'), (req, res) => {
     res.statusCode=200;
     res.setHeader('Content-Type','application/json');
     res.json({success: true, token: token, status: 'Login Successful'});
+    
 });
 
+//serving '/auth/logout'
 authRouter.get('/logout',(req,res,next)=>{
     if(req.session){
       req.session.destroy();
@@ -63,11 +67,10 @@ authRouter.get('/logout',(req,res,next)=>{
       res.redirect('/');
     }
     else{
-      var err = new Error('Youare not logged in.');
+      var err = new Error('You are not logged in.');
       err.status = 403;
       next(err);
     }
 });
 
 module.exports = authRouter;
-  

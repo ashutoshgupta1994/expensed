@@ -1,4 +1,6 @@
 var passport = require('passport');
+var authenticate = require('../authenticate');
+
 var express = require('express');
 var userRouter = express.Router();
 var Sequelize = require('sequelize');
@@ -16,8 +18,9 @@ var sequelize = new Sequelize('split','local','local',{
   dialect: 'postgres'
 });
 
+
 //Serving at '/user'
-userRouter.get('/', (req, res, next) => {
+userRouter.get('/', authenticate.verifyUser, authenticate.verifyAdmin , (req, res, next) => {
   bt.tran.findAll({ }) //finding all transactions
   .then((allTran)=>{
     console.log('All Transactions are :- \n', allTran);
@@ -38,7 +41,7 @@ userRouter.get('/', (req, res, next) => {
 
 //Serving specific user at '/user/:userId' for different kinds of requests. getType = [balance]
 
-userRouter.get('/:userId', (req, res, next) => {
+userRouter.get('/:userId', authenticate.verifyUser, (req, res, next) => {
   bt.user.findOne({  // Finding the req.params.userId in the database
     userId: req.params.userId
   })
@@ -140,7 +143,7 @@ userRouter.get('/:userId', (req, res, next) => {
   .catch((err)=>next(err));
 });
 
-userRouter.post('/:userId', (req, res, next) => {
+userRouter.post('/:userId', authenticate.verifyUser, (req, res, next) => {
   bt.tran.create({  // Creating new transaction via details provided in req.body
     actor: req.params.userId,
     creditor: req.body.creditor,
@@ -159,11 +162,11 @@ userRouter.post('/:userId', (req, res, next) => {
 
 //Serving specific user at '/user/:userId/groups'
 
-userRouter.get('/:userId/groups', (req, res, next) => {
+userRouter.get('/:userId/groups', authenticate.verifyUser, (req, res, next) => {
   
 });
 
-userRouter.post('/:userId/groups', (req, res, next) => {
+userRouter.post('/:userId/groups', authenticate.verifyUser, (req, res, next) => {
   bt.group.create({  // Creating new Group by details provided in req.body
     groupName: req.body.groupName, 
     members: req.body.members,
@@ -200,7 +203,7 @@ userRouter.post('/:userId/groups', (req, res, next) => {
 
 //Serving specific user at '/user/:userId/groups/:groupId'
 
-userRouter.post('/:userId/groups/:groupId', (req, res, next) => {
+userRouter.post('/:userId/groups/:groupId', authenticate.verifyUser, (req, res, next) => {
   bt.tran.create({  // Creating new transaction via details provided in req.body
     actor: req.params.userId,
     creditor: req.body.creditor,

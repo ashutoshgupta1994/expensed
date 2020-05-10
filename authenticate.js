@@ -49,3 +49,13 @@ exports.jwtPassport = passport.use(new JwtStrategy( opts, (jwt_payload, done)=>{
 }));
 
 exports.verifyUser = passport.authenticate('jwt', {session:false});
+exports.verifyAdmin = function (req) {
+    if (req.user.admin){
+        return next();
+    }
+    else{
+        err = new Error('Not an Authorised Administrator');
+        err.status=403;
+        next(err);
+    }
+};
