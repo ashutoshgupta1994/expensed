@@ -5,15 +5,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+
 var Sequelize = require('sequelize');
 var Model = Sequelize.Model;
-
 var bt = require('./models/baseTables');
 
 var indexRouter = require('./routes/indexRouter');
 var userRouter = require('./routes/userRouter');
 var testRouter = require('./routes/testRouter');
 var authRouter = require('./routes/authRouter');
+var adminRouter = require('./routes/adminRouter');
 
 var app = express();
 
@@ -26,10 +27,37 @@ var sequelize = new Sequelize('split','local','local',{
 sequelize.authenticate()
 .then(()=>{
   console.log(`Connection succesfully established at host=${sequelize.options.host} and port=${sequelize.options.port}`);
-  bt.user.sync().then(()=>console.log('Users Info Table synced')).catch((err)=>next(err));
-  bt.group.sync().then(()=>console.log('Groups Info Table synced')).catch((err)=>next(err));
-  bt.tran.sync().then(()=>console.log('Transactions Table synced')).catch((err)=>next(err));
-  bt.test.sync().then(()=>console.log('Test Table synced')).catch((err)=>next(err));
+  
+  bt.user.sync({alter:true})
+  .then(()=>{
+    console.log('Users Info Table synced');
+    
+    //Setting an Admin User
+/*-----    bt.user.register( new bt.user({username: 'admin'}), 'admin', (err, user)=>{ 
+      //serving callback inside user.register function
+      if (err) {
+          console.log({'error':err});
+          
+      }
+      else { // setting other admin details and then saving
+        user.firstname = 'boss';
+        user.lastname = 'man';
+        user.admin = true;
+        user.save()
+        .then((user)=>{
+          console.log('\nAdmin Saved as ', user);        
+        })
+        .catch((err)=>next(err));
+      };
+    });   ------*/
+
+  }).catch((err)=>next(err));
+
+  bt.group.sync({alter:true}).then(()=>console.log('Groups Info Table synced')).catch((err)=>next(err));
+  
+  bt.tran.sync({alter:true}).then(()=>console.log('Transactions Table synced')).catch((err)=>next(err));
+  
+  bt.test.sync({alter:true}).then(()=>console.log('Test Table synced')).catch((err)=>next(err));
 })
 .catch((err) => {
   console.error('Unable to connect to the database:', err);
@@ -51,6 +79,7 @@ app.use(passport.initialize());
 //Routing endpoints
 app.use('/', indexRouter);
 app.use('/user', userRouter); // Directing to specific user related tasks, posting transaction, viewing transactions, viewing balance, etc.
+app.use('/admin',adminRouter);
 app.use('/test', testRouter);
 app.use('/auth', authRouter); // Directing to Authorisation related tasks, i.e. Singup, Login and Logout.
 

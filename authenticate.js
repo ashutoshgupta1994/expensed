@@ -34,18 +34,19 @@ opts.secretOrKey = config.secretKey;
 //'jsonwebtoken strategy'
 exports.jwtPassport = passport.use(new JwtStrategy( opts, (jwt_payload, done)=>{
     console.log('JWT payload :- ', jwt_payload);
-    bt.user.findOne({userId: jwt_payload._id}, (err,user)=>{
-        if(err){
-            return done(err, false);
+    bt.user.findOne({
+        where:{
+            userId: jwt_payload._id
         }
-        else if(user){
-            return done(null, user);
-        }
-        else{
-            return done(null, false);
-        }
-    });
-    
+    })
+    .then((user)=>{
+        return done(null, user);
+    }, ()=>{
+        return done(null, false);
+    })
+    .catch((err)=>{
+        return done(err,false);
+    });    
 }));
 
 exports.verifyUser = passport.authenticate('jwt', {session:false});

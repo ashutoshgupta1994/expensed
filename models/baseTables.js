@@ -42,10 +42,6 @@ user.init({
   admin:{
     type: Sequelize.BOOLEAN,
     default: false
-  },
-  groups:{
-    type: Sequelize.STRING,
-    default: null
   }
 },{
   sequelize,
@@ -63,24 +59,29 @@ class group extends Model{}
 group.init({
   groupId:{
     type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
+    primaryKey: true
   },
   groupName:{
     type: Sequelize.STRING,
   },
-  members:{
-    type: Sequelize.STRING,
+  userId:{
+    type: Sequelize.INTEGER,
+    primaryKey: true
   },
-  admin:{
-      type: Sequelize.STRING
+  groupAdmin:{
+    type: Sequelize.BOOLEAN,
+    default: false
+  },
+  groupDescription:{
+    type: Sequelize.TEXT
   }
 },{
   sequelize,
   modelName: 'group'
 });
 
-// Model fro Transaction Table
+// Model for Transaction Table
 class tran extends Model{}
 tran.init({
   tranId:{
@@ -89,20 +90,23 @@ tran.init({
     autoIncrement:true
   },
   actor:{
-    type: Sequelize.STRING
+    type: Sequelize.INTEGER
   },
   creditor:{
-    type: Sequelize.STRING
+    type: Sequelize.INTEGER
   },
   debtor:{
-    type: Sequelize.STRING
+    type: Sequelize.INTEGER
   },
   value:{
     type: Sequelize.INTEGER
   },
   groupId:{
     type: Sequelize.INTEGER,
-    default: null 
+    default: null
+  },
+  tranDescription:{
+    type: Sequelize.TEXT
   }
 },{
   sequelize,
